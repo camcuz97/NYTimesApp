@@ -15,13 +15,16 @@ public class ArticleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
+        //set up toolbare
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //get the article
         Article article = (Article) getIntent().getSerializableExtra("article");
         WebView webView = (WebView) findViewById(R.id.wvArticle);
 
         assert webView != null;
+        //load url on click
         webView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

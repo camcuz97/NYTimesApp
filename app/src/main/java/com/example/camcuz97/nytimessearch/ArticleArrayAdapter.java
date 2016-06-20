@@ -38,6 +38,7 @@ public class ArticleArrayAdapter extends ArrayAdapter<Article>{
         //clear out recycled image from convertview from last time
         imageView.setImageResource(0);
 
+        //set textview to be the headline
         TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
         tvTitle.setText(article.getHeadline());
 
@@ -45,7 +46,12 @@ public class ArticleArrayAdapter extends ArrayAdapter<Article>{
         //remote download image in the background
         String thumbnail = article.getThumbNail();
         if(!TextUtils.isEmpty(thumbnail)){
+            //if thumbnail isn't empty, download thumbnail
             Picasso.with(getContext()).load(thumbnail).into(imageView);
+        }
+        else{
+            //if it is empty, set to default image
+            imageView.setImageResource(R.drawable.ic_no_image);
         }
         return convertView;
     }

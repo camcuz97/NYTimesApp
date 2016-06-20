@@ -17,10 +17,12 @@ public class Article implements Serializable{
 
     public Article(JSONObject jsonObject){
         try{
+            //set the instance fields
             this.webUrl = jsonObject.getString("web_url");
             this.headline = jsonObject.getJSONObject("headline").getString("main");
 
             JSONArray multimedia = jsonObject.getJSONArray("multimedia");
+            //gets thumbnail if it exists
             if(multimedia.length() > 0){
                 JSONObject multimediaJson = multimedia.getJSONObject(0);
                 this.thumbNail = "http://www.nytimes.com/" + multimediaJson.getString("url");
@@ -37,6 +39,7 @@ public class Article implements Serializable{
         ArrayList<Article> results = new ArrayList<>();
         for(int i = 0; i < array.length(); i++){
              try{
+                 //add article to array
                  results.add(new Article(array.getJSONObject(i)));
              } catch (JSONException e){
                  e.printStackTrace();
