@@ -68,6 +68,18 @@ public class SearchActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+//        gvResults.setOnScrollListener(new EndlessScrollListener() {
+//            @Override
+//            public boolean onLoadMore(int page, int totalItemsCount) {
+//                customLoadMoreDataFromApi(page);
+//                return false;
+//            }
+//
+//            @Override
+//            public int getFooterViewType() {
+//                return -1;
+//            }
+//        });
     }
 
     @Override
@@ -91,6 +103,37 @@ public class SearchActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+//    public void customLoadMoreDataFromApi(int offset) {
+//        // This method probably sends out a network request and appends new data items to your adapter.
+//        // Use the offset value and add it as a parameter to your API request to retrieve paginated data.
+//        // Deserialize API response and then construct new objects to append to the adapter
+//        String query = etQuery.getText().toString();
+//        AsyncHttpClient client = new AsyncHttpClient();
+//        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+//        RequestParams params = new RequestParams();
+//        params.put("api-key","67ba0e31ba6a410bb28b49d32c3e5a35");
+//        params.put("page",offset);
+//        params.put("q", query);
+//        client.get(url,params, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//                Log.d("DEBUG", response.toString());
+//                JSONArray articleJsonResults = null;
+//                try{
+//                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+//                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
+//                    //articles.addAll(Article.fromJSONArray(articleJsonResults));
+//                    //adapter.notifyDataSetChanged();
+//                    Log.d("DEBUG", articles.toString());
+//                } catch(JSONException e){
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//
+//    }
+
 
     public void onArticleSearch(View view) {
         String query = etQuery.getText().toString();

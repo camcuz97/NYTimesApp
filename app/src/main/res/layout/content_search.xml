@@ -12,6 +12,12 @@
     tools:context=".activities.SearchActivity"
     tools:showIn="@layout/activity_search">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvContacts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/btnSearch" />
+
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,11 +39,4 @@
         android:text="@string/search"
         android:onClick="onArticleSearch"/>
 
-    <GridView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gvResults"
-        android:layout_below="@+id/btnSearch"
-        android:layout_centerHorizontal="true"
-        android:numColumns="4" />
 </RelativeLayout>
