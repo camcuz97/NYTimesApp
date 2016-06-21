@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnSearch" />
 
-    <EditText
+    <!--<EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/etQuery"
@@ -36,8 +36,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:text="@string/search"
-        android:onClick="onArticleSearch"/>
+        android:text="@string/search" />-->
 
     <!--<GridView
         android:layout_width="wrap_content"
