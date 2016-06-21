@@ -1,17 +1,16 @@
 package com.example.camcuz97.nytimessearch.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 
 import com.example.camcuz97.nytimessearch.Article;
 import com.example.camcuz97.nytimessearch.ArticleArrayAdapter;
@@ -32,7 +31,8 @@ public class SearchActivity extends AppCompatActivity {
 
     EditText etQuery;
     Button btnSearch;
-    GridView gvResults;
+    //GridView gvResults;
+    RecyclerView rvResults;
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
 
@@ -49,25 +49,36 @@ public class SearchActivity extends AppCompatActivity {
     public void setupViews(){
         etQuery = (EditText) findViewById(R.id.etQuery);
         btnSearch = (Button) findViewById(R.id.btnSearch);
-        gvResults = (GridView) findViewById(R.id.gvResults);
+        rvResults = (RecyclerView) findViewById(R.id.rvArticles);
+        //gvResults = (GridView) findViewById(R.id.gvResults);
         articles = new ArrayList<>();
-        adapter = new ArticleArrayAdapter(this, articles);
-        gvResults.setAdapter(adapter);
+        adapter = new ArticleArrayAdapter(articles);
+        rvResults.setAdapter(adapter);
+        //rvResults.setLayoutManager(new StaggeredGridLayoutManager(this));
+        StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        rvResults.setLayoutManager(gridLayoutManager);
+//        rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener() {
+//            @Override
+//            public void onLoadMore(int page, int totalItemsCount) {
+//
+//            }
+//        });
+        //gvResults.setAdapter(adapter);
 
         //hook up listener for grid click
-        gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //create intent to display article
-                Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
-                //get the article to display
-                Article article = articles.get(position);
-                //pass article into intent
-                i.putExtra("article", article);
-                //launch the activity
-                startActivity(i);
-            }
-        });
+//        gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                //create intent to display article
+//                Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
+//                //get the article to display
+//                Article article = articles.get(position);
+//                //pass article into intent
+//                i.putExtra("article", article);
+//                //launch the activity
+//                startActivity(i);
+//            }
+//        });
 //        gvResults.setOnScrollListener(new EndlessScrollListener() {
 //            @Override
 //            public boolean onLoadMore(int page, int totalItemsCount) {
@@ -151,7 +162,8 @@ public class SearchActivity extends AppCompatActivity {
                 JSONArray articleJsonResults = null;
                 try{
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
+                    articles.addAll(Article.fromJSONArray(articleJsonResults));
+                    adapter.notifyDataSetChanged();
                     //articles.addAll(Article.fromJSONArray(articleJsonResults));
                     //adapter.notifyDataSetChanged();
                     Log.d("DEBUG", articles.toString());
