@@ -14,6 +14,7 @@ import android.widget.EditText;
 
 import com.example.camcuz97.nytimessearch.Article;
 import com.example.camcuz97.nytimessearch.ArticleArrayAdapter;
+import com.example.camcuz97.nytimessearch.EndlessRecyclerViewScrollListener;
 import com.example.camcuz97.nytimessearch.R;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -35,6 +36,7 @@ public class SearchActivity extends AppCompatActivity {
     RecyclerView rvResults;
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
+    int currPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +59,12 @@ public class SearchActivity extends AppCompatActivity {
         //rvResults.setLayoutManager(new StaggeredGridLayoutManager(this));
         StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         rvResults.setLayoutManager(gridLayoutManager);
-//        rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener() {
-//            @Override
-//            public void onLoadMore(int page, int totalItemsCount) {
-//
-//            }
-//        });
+        rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                customLoadMoreDataFromApi(page);
+            }
+        });
         //gvResults.setAdapter(adapter);
 
         //hook up listener for grid click
@@ -173,5 +175,35 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+    }
+    public void customLoadMoreDataFromApi(int page){
+        String query = etQuery.getText().toString();
+        //Toast.makeText(this, "Searching for " + query, Toast.LENGTH_LONG).show();
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+        RequestParams params = new RequestParams();
+        params.put("api-key","67ba0e31ba6a410bb28b49d32c3e5a35");
+        params.put("q", query);
+        params.put("page",page);
+        client.get(url,params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.d("DEBUG", response.toString());
+                JSONArray articleJsonResults = null;
+                try{
+                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+                    articles.addAll(Article.fromJSONArray(articleJsonResults));
+                    adapter.notifyDataSetChanged();
+                    //articles.addAll(Article.fromJSONArray(articleJsonResults));
+                    //adapter.notifyDataSetChanged();
+                    Log.d("DEBUG", articles.toString());
+                } catch(JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        });
+        currPage = page;
+        int curSize = adapter.getItemCount();
+        adapter.notifyItemRangeInserted(curSize, articles.size() - 1);
     }
 }
