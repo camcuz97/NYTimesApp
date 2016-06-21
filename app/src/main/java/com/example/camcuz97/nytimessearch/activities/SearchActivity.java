@@ -37,6 +37,7 @@ public class SearchActivity extends AppCompatActivity {
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
     int currPage = 0;
+    StaggeredGridLayoutManager gridLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +58,8 @@ public class SearchActivity extends AppCompatActivity {
         adapter = new ArticleArrayAdapter(articles);
         rvResults.setAdapter(adapter);
         //rvResults.setLayoutManager(new StaggeredGridLayoutManager(this));
-        StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        gridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         rvResults.setLayoutManager(gridLayoutManager);
-        rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                customLoadMoreDataFromApi(page);
-            }
-        });
         //gvResults.setAdapter(adapter);
 
         //hook up listener for grid click
@@ -149,6 +144,13 @@ public class SearchActivity extends AppCompatActivity {
 
 
     public void onArticleSearch(View view) {
+        rvResults.clearOnScrollListeners();
+        rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                customLoadMoreDataFromApi(page);
+            }
+        });
         String query = etQuery.getText().toString();
         //Toast.makeText(this, "Searching for " + query, Toast.LENGTH_LONG).show();
         AsyncHttpClient client = new AsyncHttpClient();
@@ -163,6 +165,7 @@ public class SearchActivity extends AppCompatActivity {
                 Log.d("DEBUG", response.toString());
                 JSONArray articleJsonResults = null;
                 try{
+                    articles.clear();
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
                     articles.addAll(Article.fromJSONArray(articleJsonResults));
                     adapter.notifyDataSetChanged();
@@ -202,8 +205,7 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         });
-        currPage = page;
-        int curSize = adapter.getItemCount();
-        adapter.notifyItemRangeInserted(curSize, articles.size() - 1);
+        //int curSize = adapter.getItemCount();
+        //adapter.notifyItemRangeInserted(curSize, articles.size() - 1);
     }
 }
