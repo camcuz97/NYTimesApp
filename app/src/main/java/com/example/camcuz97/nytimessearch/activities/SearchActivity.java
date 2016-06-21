@@ -47,7 +47,6 @@ public class SearchActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setupViews();
-
     }
 
     public void setupViews(){
@@ -170,14 +169,14 @@ public class SearchActivity extends AppCompatActivity {
     public void onArticleSearch(int page) {
         if(page == 0){
             articles.clear();
+            rvResults.clearOnScrollListeners();
+            rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
+                @Override
+                public void onLoadMore(int page, int totalItemsCount) {
+                    onArticleSearch(page);
+                }
+            });
         }
-        rvResults.clearOnScrollListeners();
-        rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                onArticleSearch(page);
-            }
-        });
         //String query = etQuery.getText().toString();
         //Toast.makeText(this, "Searching for " + query, Toast.LENGTH_LONG).show();
         AsyncHttpClient client = new AsyncHttpClient();
