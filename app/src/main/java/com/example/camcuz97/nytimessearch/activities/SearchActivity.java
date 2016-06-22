@@ -1,5 +1,6 @@
 package com.example.camcuz97.nytimessearch.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 public class SearchActivity extends AppCompatActivity {
@@ -33,18 +36,22 @@ public class SearchActivity extends AppCompatActivity {
     //EditText etQuery;
     //Button btnSearch;
     //GridView gvResults;
-    RecyclerView rvResults;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.rvArticles) RecyclerView rvResults;
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
     int currPage = 0;
     StaggeredGridLayoutManager gridLayoutManager;
     String searchTerm;
+    private final int REQUEST_CODE = 200;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setupViews();
     }
@@ -52,7 +59,7 @@ public class SearchActivity extends AppCompatActivity {
     public void setupViews(){
         //etQuery = (EditText) findViewById(R.id.etQuery);
         //btnSearch = (Button) findViewById(R.id.btnSearch);
-        rvResults = (RecyclerView) findViewById(R.id.rvArticles);
+        //rvResults = (RecyclerView) findViewById(R.id.rvArticles);
         //gvResults = (GridView) findViewById(R.id.gvResults);
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(articles);
@@ -116,6 +123,7 @@ public class SearchActivity extends AppCompatActivity {
                 return false;
             }
         });
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -131,8 +139,17 @@ public class SearchActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.action_filter){
+            onClickFilter();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onClickFilter() {
+        Intent i = new Intent(SearchActivity.this, FilterActivity.class);
+        startActivity(i);
     }
 
 //    public void customLoadMoreDataFromApi(int offset) {
