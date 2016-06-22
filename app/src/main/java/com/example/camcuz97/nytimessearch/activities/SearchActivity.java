@@ -149,10 +149,15 @@ public class SearchActivity extends AppCompatActivity {
 
     private void onClickFilter() {
         Intent i = new Intent(SearchActivity.this, FilterActivity.class);
-        startActivity(i);
+        startActivityForResult(i, REQUEST_CODE);
     }
 
-//    public void customLoadMoreDataFromApi(int offset) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    //    public void customLoadMoreDataFromApi(int offset) {
 //        // This method probably sends out a network request and appends new data items to your adapter.
 //        // Use the offset value and add it as a parameter to your API request to retrieve paginated data.
 //        // Deserialize API response and then construct new objects to append to the adapter

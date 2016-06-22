@@ -1,12 +1,14 @@
 package com.example.camcuz97.nytimessearch.activities;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.example.camcuz97.nytimessearch.R;
@@ -19,6 +21,9 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
     boolean arts = false;
     boolean style = false;
     boolean sports = false;
+    EditText etDate;
+    Calendar cal;
+    int month; int day; int year;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +37,24 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
         spinner.setSelection(0);
+        etDate = (EditText) findViewById(R.id.etDate);
+        etDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cal = Calendar.getInstance();
+                year = cal.get(Calendar.YEAR);
+                day = cal.get(Calendar.DATE);
+                month = cal.get(Calendar.MONTH);
+                DatePickerDialog datePicker = new DatePickerDialog(FilterActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int currYear, int monthOfYear, int dayOfMonth) {
+                        etDate.setText(currYear + "-" + (monthOfYear+1) + "-" + dayOfMonth);
+                    }
+                }, year,month, day);
+                datePicker.setTitle("Select Date");
+                datePicker.show();
+            }
+        });
     }
 //    // attach to an onclick handler to show the date picker
 //    public void showDatePickerDialog(View v) {
@@ -43,7 +66,7 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         // store the values selected into a Calendar instance
-        final Calendar c = Calendar.getInstance();
+        Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, monthOfYear);
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -83,6 +106,13 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
 
     public void onSubmit(View view){
         spSort = spinner.getSelectedItem().toString();
+        Intent data = new Intent();
+        data.putExtra("sort", spSort);
+        data.putExtra("date", etDate.getText());
+        data.putExtra("arts", arts);
+        data.putExtra("style", style);
+        data.putExtra("sports", sports);
+        setResult(RESULT_OK, data);
         finish();
     }
 }
