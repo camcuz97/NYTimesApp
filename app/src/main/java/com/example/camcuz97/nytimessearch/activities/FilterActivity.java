@@ -14,6 +14,8 @@ import android.widget.Spinner;
 import com.example.camcuz97.nytimessearch.Filters;
 import com.example.camcuz97.nytimessearch.R;
 
+import org.parceler.Parcels;
+
 import java.util.Calendar;
 
 import butterknife.BindView;
@@ -125,7 +127,7 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
         }
         data.putExtra("date", date);
         Filters filter = new Filters(arts, style, sports);
-        data.putExtra("filter", filter);
+        data.putExtra("filter", Parcels.wrap(filter));
         setResult(RESULT_OK, data);
         finish();
     }

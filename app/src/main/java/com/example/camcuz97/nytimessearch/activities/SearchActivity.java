@@ -25,6 +25,7 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -164,7 +165,7 @@ public class SearchActivity extends AppCompatActivity {
         if(resultCode == RESULT_OK && requestCode == REQUEST_CODE){
             sort = data.getExtras().getString("sort");
             begin = data.getExtras().getString("date");
-            filter = (Filters) data.getSerializableExtra("filter");
+            filter = (Filters) Parcels.unwrap(data.getParcelableExtra("filter"));
         }
     }
 
