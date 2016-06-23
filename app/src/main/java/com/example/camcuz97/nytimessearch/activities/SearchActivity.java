@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import com.example.camcuz97.nytimessearch.Article;
 import com.example.camcuz97.nytimessearch.ArticleArrayAdapter;
 import com.example.camcuz97.nytimessearch.EndlessRecyclerViewScrollListener;
+import com.example.camcuz97.nytimessearch.Filters;
 import com.example.camcuz97.nytimessearch.R;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -43,6 +44,9 @@ public class SearchActivity extends AppCompatActivity {
     int currPage = 0;
     StaggeredGridLayoutManager gridLayoutManager;
     String searchTerm;
+    String sort = "newest";
+    String begin;
+    Filters filter;
     private final int REQUEST_CODE = 200;
 
 
@@ -67,6 +71,7 @@ public class SearchActivity extends AppCompatActivity {
         //rvResults.setLayoutManager(new StaggeredGridLayoutManager(this));
         gridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         rvResults.setLayoutManager(gridLayoutManager);
+        filter = new Filters();
         //gvResults.setAdapter(adapter);
 
         //hook up listener for grid click
@@ -154,7 +159,11 @@ public class SearchActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_CODE){
+            sort = data.getExtras().getString("sort");
+            begin = data.getExtras().getString("date");
+            filter = (Filters) data.getSerializableExtra("filter");
+        }
     }
 
     //    public void customLoadMoreDataFromApi(int offset) {
@@ -199,32 +208,57 @@ public class SearchActivity extends AppCompatActivity {
                 }
             });
         }
-        //String query = etQuery.getText().toString();
-        //Toast.makeText(this, "Searching for " + query, Toast.LENGTH_LONG).show();
+        searchUrl(page,searchTerm,filter);
+    }
+
+    private void searchUrl(int page, String query, Filters filt) {
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
         RequestParams params = new RequestParams();
-        params.put("api-key","67ba0e31ba6a410bb28b49d32c3e5a35");
-        params.put("page",page);
-        params.put("q", searchTerm);
-        client.get(url,params, new JsonHttpResponseHandler() {
+        params.put("api-key", "67ba0e31ba6a410bb28b49d32c3e5a35");
+        params.put("page", page);
+        params.put("q", query);
+        ArrayList<String> queries = new ArrayList<>();
+        if (filt.isArts()) {
+            queries.add("Arts ");
+        }
+        if (filt.isSports()) {
+            queries.add("Sports ");
+        }
+        if (filt.isStyle()) {
+            queries.add("Fashion ");
+        }
+        if (queries.size() != 0) {
+            String tempQuery = "news_desk:(";
+            for (int i = 0; i < queries.size(); i++) {
+                tempQuery += queries.get(i);
+            }
+            tempQuery += ")";
+            params.put("fq", tempQuery);
+        }
+        params.put("sort", sort);
+        Log.d("BEGIN DATE", begin);
+        if(begin.length() != 0){
+            params.put("begin_date", begin);
+        }
+        client.get(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.d("DEBUG", response.toString());
                 JSONArray articleJsonResults = null;
-                try{
+                try {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
                     articles.addAll(Article.fromJSONArray(articleJsonResults));
                     adapter.notifyDataSetChanged();
                     //articles.addAll(Article.fromJSONArray(articleJsonResults));
                     //adapter.notifyDataSetChanged();
                     Log.d("DEBUG", articles.toString());
-                } catch(JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-        });
 
+        });
     }
 //    public void customLoadMoreDataFromApi(int page){
 //        //String query = etQuery.getText().toString();

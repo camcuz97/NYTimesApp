@@ -11,6 +11,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.example.camcuz97.nytimessearch.Filters;
 import com.example.camcuz97.nytimessearch.R;
 
 import java.util.Calendar;
@@ -108,11 +109,19 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
         spSort = spinner.getSelectedItem().toString();
         Intent data = new Intent();
         data.putExtra("sort", spSort);
-        data.putExtra("date", etDate.getText());
-        data.putExtra("arts", arts);
-        data.putExtra("style", style);
-        data.putExtra("sports", sports);
+        String date = etDate.getText().toString();
+        if(date.charAt(6) == '-'){
+            date = date.substring(0,5) + "0" + date.substring(5);
+        }
+        if(date.length() != 10){
+            date = date.substring(0,8) + "0" + date.substring(8);
+        }
+        date = date.replace("-","");
+        data.putExtra("date", date);
+        Filters filter = new Filters(arts, style, sports);
+        data.putExtra("filter", filter);
         setResult(RESULT_OK, data);
         finish();
     }
 }
+
