@@ -16,13 +16,16 @@ import com.example.camcuz97.nytimessearch.R;
 
 import java.util.Calendar;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class FilterActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
-    Spinner spinner;
+    @BindView(R.id.spSort) Spinner spinner;
     String spSort;
     boolean arts = false;
     boolean style = false;
     boolean sports = false;
-    EditText etDate;
+    @BindView(R.id.etDate) EditText etDate;
     Calendar cal;
     int month; int day; int year;
 
@@ -30,7 +33,8 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
-        spinner = (Spinner) findViewById(R.id.spSort);
+        ButterKnife.bind(this);
+        //spinner = (Spinner) findViewById(R.id.spSort);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.strings_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
@@ -38,7 +42,7 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
         spinner.setSelection(0);
-        etDate = (EditText) findViewById(R.id.etDate);
+        //etDate = (EditText) findViewById(R.id.etDate);
         etDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,13 +114,15 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
         Intent data = new Intent();
         data.putExtra("sort", spSort);
         String date = etDate.getText().toString();
-        if(date.charAt(6) == '-'){
-            date = date.substring(0,5) + "0" + date.substring(5);
+        if(!date.equals("")){
+            if(date.charAt(6) == '-'){
+                date = date.substring(0,5) + "0" + date.substring(5);
+            }
+            if(date.length() != 10){
+                date = date.substring(0,8) + "0" + date.substring(8);
+            }
+            date = date.replace("-","");
         }
-        if(date.length() != 10){
-            date = date.substring(0,8) + "0" + date.substring(8);
-        }
-        date = date.replace("-","");
         data.putExtra("date", date);
         Filters filter = new Filters(arts, style, sports);
         data.putExtra("filter", filter);

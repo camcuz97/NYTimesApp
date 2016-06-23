@@ -237,10 +237,10 @@ public class SearchActivity extends AppCompatActivity {
             params.put("fq", tempQuery);
         }
         params.put("sort", sort);
-        Log.d("BEGIN DATE", begin);
         if(begin.length() != 0){
             params.put("begin_date", begin);
         }
+        Log.d("DATE", url + params);
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
