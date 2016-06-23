@@ -45,7 +45,7 @@ public class SearchActivity extends AppCompatActivity {
     StaggeredGridLayoutManager gridLayoutManager;
     String searchTerm;
     String sort = "newest";
-    String begin;
+    String begin = "";
     Filters filter;
     private final int REQUEST_CODE = 200;
 
