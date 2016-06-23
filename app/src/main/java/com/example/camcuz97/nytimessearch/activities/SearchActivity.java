@@ -48,6 +48,7 @@ public class SearchActivity extends AppCompatActivity {
     String begin = "";
     Filters filter;
     private final int REQUEST_CODE = 200;
+    boolean topStories = true;
 
 
     @Override
@@ -58,6 +59,7 @@ public class SearchActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setupViews();
+        onArticleSearch(0);
     }
 
     public void setupViews(){
@@ -211,36 +213,43 @@ public class SearchActivity extends AppCompatActivity {
         searchUrl(page,searchTerm,filter);
     }
 
+
     private void searchUrl(int page, String query, Filters filt) {
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
         RequestParams params = new RequestParams();
         params.put("api-key", "67ba0e31ba6a410bb28b49d32c3e5a35");
         params.put("page", page);
-        params.put("q", query);
-        ArrayList<String> queries = new ArrayList<>();
-        if (filt.isArts()) {
-            queries.add("Arts ");
-        }
-        if (filt.isSports()) {
-            queries.add("Sports ");
-        }
-        if (filt.isStyle()) {
-            queries.add("Fashion ");
-        }
-        if (queries.size() != 0) {
-            String tempQuery = "news_desk:(";
-            for (int i = 0; i < queries.size(); i++) {
-                tempQuery += queries.get(i);
+        if(!topStories){
+            params.put("q", query);
+            ArrayList<String> queries = new ArrayList<>();
+            if (filt.isArts()) {
+                queries.add("Arts ");
             }
-            tempQuery += ")";
-            params.put("fq", tempQuery);
+            if (filt.isSports()) {
+                queries.add("Sports ");
+            }
+            if (filt.isStyle()) {
+                queries.add("Fashion ");
+            }
+            if (queries.size() != 0) {
+                String tempQuery = "news_desk:(";
+                for (int i = 0; i < queries.size(); i++) {
+                    tempQuery += queries.get(i);
+                }
+                tempQuery += ")";
+                params.put("fq", tempQuery);
+            }
+            params.put("sort", sort);
+            if(begin.length() != 0){
+                params.put("begin_date", begin);
+            }
+            Log.d("DATE", url + params);
         }
-        params.put("sort", sort);
-        if(begin.length() != 0){
-            params.put("begin_date", begin);
+        else{
+            params.put("callback", "callbackTopStories");
+            topStories = false;
         }
-        Log.d("DATE", url + params);
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
