@@ -166,6 +166,9 @@ public class SearchActivity extends AppCompatActivity {
             sort = data.getExtras().getString("sort");
             begin = data.getExtras().getString("date");
             filter = (Filters) Parcels.unwrap(data.getParcelableExtra("filter"));
+            articles.clear();
+            adapter.notifyDataSetChanged();
+            onArticleSearch(0);
         }
     }
 

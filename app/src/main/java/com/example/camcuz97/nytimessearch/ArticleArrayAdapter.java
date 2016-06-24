@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.camcuz97.nytimessearch.activities.ArticleActivity;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -84,7 +84,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
         imageView.setImageResource(0);
         String thumbnail = article.getThumbNail();
         if(!TextUtils.isEmpty(thumbnail)) {
-            Picasso.with(imageView.getContext()).load(thumbnail).into(imageView);
+            Glide.with(imageView.getContext()).load(thumbnail).into(imageView);
         } else{
             imageView.setImageResource(R.drawable.ic_no_image);
         }
