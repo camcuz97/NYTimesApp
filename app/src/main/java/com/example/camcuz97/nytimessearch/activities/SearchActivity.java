@@ -1,5 +1,6 @@
 package com.example.camcuz97.nytimessearch.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -50,6 +51,7 @@ public class SearchActivity extends AppCompatActivity {
     Filters filter;
     private final int REQUEST_CODE = 200;
     boolean topStories = true;
+    ProgressDialog pd;
 
 
     @Override
@@ -207,6 +209,11 @@ public class SearchActivity extends AppCompatActivity {
 
     public void onArticleSearch(int page) {
         if(page == 0){
+            pd = new ProgressDialog(this);
+            pd.setTitle("Loading...");
+            pd.setMessage("Please wait.");
+            pd.setCancelable(false);
+            pd.show();
             articles.clear();
             rvResults.clearOnScrollListeners();
             rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
@@ -260,6 +267,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.d("DEBUG", response.toString());
+                pd.dismiss();
                 JSONArray articleJsonResults = null;
                 try {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
