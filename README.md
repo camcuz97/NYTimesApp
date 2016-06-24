@@ -16,7 +16,7 @@ The following **optional** features are implemented:
 
 * [X] Used the **ActionBar SearchView** or custom layout as the query box
 * [X] User can **share an article link** to their friends or email it to themselves
-* [ ] Improved the user interface and experiment with image assets and/or styling and coloring
+* [X] Improved the user interface and experiment with image assets and/or styling and coloring
 * [X] User can click on "filter" which allows selection of **advanced search options** to filter results
   * [X] User can configure advanced search filters such as:
     * [X] Begin Date (using a date picker)
@@ -38,6 +38,7 @@ The following **additional** features are implemented:
 * [ ] List anything else that you can get done to improve the app functionality!
 * [X] Added placeholder image for articles without thumbnails
 * [X] Added horizontal layout where necessary
+* [X] Added progress bar when first loading a new set of articles
 
 ## Video Walkthrough
 
