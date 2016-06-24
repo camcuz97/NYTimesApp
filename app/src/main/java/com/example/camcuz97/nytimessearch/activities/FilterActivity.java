@@ -37,25 +37,16 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
         ButterKnife.bind(this);
+        // Gets filter from SearchActivity
         filter = Parcels.unwrap(getIntent().getParcelableExtra("filter"));
-        //spinner = (Spinner) findViewById(R.id.spSort);
-        // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.strings_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
-        if(filter.getSort().equals("Newest")){
-            spinner.setSelection(0);
-        }
-        else{
-            spinner.setSelection(1);
-        }
-        if(filter.isArts()){cbArts.setChecked(true);}
-        if(filter.isSports()){cbSports.setChecked(true);}
-        if(filter.isStyle()){cbStyle.setChecked(true);}
-        if(!filter.getBegin().equals("")){etDate.setText(filter.getUnchangedDate());}
-        //etDate = (EditText) findViewById(R.id.etDate);
+        //Sets up checkboxes and textfields
+        setViews();
+        //sets click listener
         etDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,6 +54,7 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
                 year = cal.get(Calendar.YEAR);
                 day = cal.get(Calendar.DATE);
                 month = cal.get(Calendar.MONTH);
+                //creates date picker
                 DatePickerDialog datePicker = new DatePickerDialog(FilterActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int currYear, int monthOfYear, int dayOfMonth) {
@@ -74,11 +66,14 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
             }
         });
     }
-//    // attach to an onclick handler to show the date picker
-//    public void showDatePickerDialog(View v) {
-//        DatePickerFragment newFragment = new DatePickerFragment();
-//        newFragment.show(getFragmentManager(), "datePicker");
-//    }
+
+    private void setViews(){
+        spinner.setSelection((filter.getSort().equals("Newest")) ? 0 : 1);
+        cbArts.setChecked((filter.isArts()));
+        cbSports.setChecked((filter.isSports()));
+        cbStyle.setChecked((filter.isStyle()));
+        etDate.setText(filter.getUnchangedDate());
+    }
 
     // handle the date selected
     @Override
@@ -96,39 +91,25 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
 
         // Check which checkbox was clicked
         switch(view.getId()) {
+            //sets filters boolean vals accordingly
             case R.id.cbArts:
-                if (checked){
-                    filter.setArts(true);
-                }
-                else{
-                    filter.setArts(false);
-                }
+                filter.setArts(checked);
                 break;
             case R.id.cbStyle:
-                if (checked){
-                    filter.setStyle(true);
-                }
-                else{
-                    filter.setStyle(false);
-                }
+                filter.setStyle(checked);
                 break;
             case R.id.cbSports:
-                if (checked){
-                    filter.setSports(true);
-                }
-                else{
-                    filter.setSports(false);
-                }
+                filter.setSports(checked);
         }
     }
 
     public void onSubmit(View view){
+        //setting filter's values
         filter.setSort(spinner.getSelectedItem().toString());
         Intent data = new Intent();
-        //data.putExtra("sort", spSort);
         filter.setUnchangedDate(etDate.getText().toString());
         filter.manipulateDate();
-        //data.putExtra("date", date);
+        //send filter back and end activity
         data.putExtra("filter", Parcels.wrap(filter));
         setResult(RESULT_OK, data);
         finish();

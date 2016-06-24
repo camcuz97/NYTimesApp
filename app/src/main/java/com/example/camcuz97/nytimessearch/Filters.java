@@ -31,14 +31,6 @@ public class Filters{
         begin = "";
     }
 
-    public Filters(boolean arts, boolean style, boolean sports, String sort, String begin) {
-        this.arts = arts;
-        this.style = style;
-        this.sports = sports;
-        this.sort = sort;
-        this.begin = begin;
-    }
-
     public void setArts(boolean arts) {
         this.arts = arts;
     }

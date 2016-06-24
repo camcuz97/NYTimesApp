@@ -36,76 +36,50 @@ import cz.msebera.android.httpclient.Header;
 
 public class SearchActivity extends AppCompatActivity {
 
-    //EditText etQuery;
-    //Button btnSearch;
-    //GridView gvResults;
+
+
+    //Set up private instance fields and binds to butterknife
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.rvArticles) RecyclerView rvResults;
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
-    int currPage = 0;
     StaggeredGridLayoutManager gridLayoutManager;
     String searchTerm;
-    String sort = "newest";
-    String begin = "";
     Filters filter;
     private final int REQUEST_CODE = 200;
     boolean topStories = true;
     ProgressDialog pd;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        //binds butterknife
         ButterKnife.bind(this);
+        //set up toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setupViews();
+        //calls first search for top stories
         onArticleSearch(0);
     }
 
+
+
     public void setupViews(){
-        //etQuery = (EditText) findViewById(R.id.etQuery);
-        //btnSearch = (Button) findViewById(R.id.btnSearch);
-        //rvResults = (RecyclerView) findViewById(R.id.rvArticles);
-        //gvResults = (GridView) findViewById(R.id.gvResults);
+        //sets up views
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(articles);
         rvResults.setAdapter(adapter);
-        //rvResults.setLayoutManager(new StaggeredGridLayoutManager(this));
         gridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         rvResults.setLayoutManager(gridLayoutManager);
+        //defines the filter to be passed between activities
         filter = new Filters();
-        //gvResults.setAdapter(adapter);
-
-        //hook up listener for grid click
-//        gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                //create intent to display article
-//                Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
-//                //get the article to display
-//                Article article = articles.get(position);
-//                //pass article into intent
-//                i.putExtra("article", article);
-//                //launch the activity
-//                startActivity(i);
-//            }
-//        });
-//        gvResults.setOnScrollListener(new EndlessScrollListener() {
-//            @Override
-//            public boolean onLoadMore(int page, int totalItemsCount) {
-//                customLoadMoreDataFromApi(page);
-//                return false;
-//            }
-//
-//            @Override
-//            public int getFooterViewType() {
-//                return -1;
-//            }
-//        });
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -138,6 +112,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -158,63 +133,37 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void onClickFilter() {
+        //creates filter intent
         Intent i = new Intent(SearchActivity.this, FilterActivity.class);
+        //puts through the filter
         i.putExtra("filter", Parcels.wrap(filter));
         startActivityForResult(i, REQUEST_CODE);
     }
 
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == RESULT_OK && requestCode == REQUEST_CODE){
-            //sort = data.getExtras().getString("sort");
-            //begin = data.getExtras().getString("date");
             filter = Parcels.unwrap(data.getParcelableExtra("filter"));
-            sort = filter.getSort();
-            begin = filter.getBegin();
+            //clears articles and reputs in the ones that fit the filter
             articles.clear();
             adapter.notifyDataSetChanged();
             onArticleSearch(0);
         }
     }
 
-    //    public void customLoadMoreDataFromApi(int offset) {
-//        // This method probably sends out a network request and appends new data items to your adapter.
-//        // Use the offset value and add it as a parameter to your API request to retrieve paginated data.
-//        // Deserialize API response and then construct new objects to append to the adapter
-//        String query = etQuery.getText().toString();
-//        AsyncHttpClient client = new AsyncHttpClient();
-//        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
-//        RequestParams params = new RequestParams();
-//        params.put("api-key","67ba0e31ba6a410bb28b49d32c3e5a35");
-//        params.put("page",offset);
-//        params.put("q", query);
-//        client.get(url,params, new JsonHttpResponseHandler() {
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//                Log.d("DEBUG", response.toString());
-//                JSONArray articleJsonResults = null;
-//                try{
-//                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-//                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
-//                    //articles.addAll(Article.fromJSONArray(articleJsonResults));
-//                    //adapter.notifyDataSetChanged();
-//                    Log.d("DEBUG", articles.toString());
-//                } catch(JSONException e){
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//
-//    }
 
 
     public void onArticleSearch(int page) {
         if(page == 0){
+            //progress bar while search is happening
             pd = new ProgressDialog(this);
             pd.setTitle("Loading...");
             pd.setMessage("Please wait.");
             pd.setCancelable(false);
             pd.show();
+            //clears articles and sets up on scroll listener
             articles.clear();
             rvResults.clearOnScrollListeners();
             rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
@@ -224,43 +173,27 @@ public class SearchActivity extends AppCompatActivity {
                 }
             });
         }
+        //calls search helper
         searchUrl(page,searchTerm,filter);
     }
 
 
+
     private void searchUrl(int page, String query, Filters filt) {
+        //sets up async client
         AsyncHttpClient client = new AsyncHttpClient();
+        //sets up api key
         String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
         RequestParams params = new RequestParams();
         params.put("api-key", "67ba0e31ba6a410bb28b49d32c3e5a35");
         params.put("page", page);
         if(!topStories){
-            params.put("q", query);
-            ArrayList<String> queries = new ArrayList<>();
-            if (filt.isArts()) {
-                queries.add("Arts ");
-            }
-            if (filt.isSports()) {
-                queries.add("Sports ");
-            }
-            if (filt.isStyle()) {
-                queries.add("Fashion ");
-            }
-            if (queries.size() != 0) {
-                String tempQuery = "news_desk:(";
-                for (int i = 0; i < queries.size(); i++) {
-                    tempQuery += queries.get(i);
-                }
-                tempQuery += ")";
-                params.put("fq", tempQuery);
-            }
-            params.put("sort", sort);
-            if(begin.length() != 0){
-                params.put("begin_date", begin);
-            }
+            //calls set parameter helper
+            setParams(params, query, filt);
             Log.d("DATE", url + params);
         }
         else{
+            //puts top stories on screen
             params.put("callback", "callbackTopStories");
             topStories = false;
         }
@@ -274,8 +207,6 @@ public class SearchActivity extends AppCompatActivity {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
                     articles.addAll(Article.fromJSONArray(articleJsonResults));
                     adapter.notifyDataSetChanged();
-                    //articles.addAll(Article.fromJSONArray(articleJsonResults));
-                    //adapter.notifyDataSetChanged();
                     Log.d("DEBUG", articles.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -284,34 +215,24 @@ public class SearchActivity extends AppCompatActivity {
 
         });
     }
-//    public void customLoadMoreDataFromApi(int page){
-//        //String query = etQuery.getText().toString();
-//        //Toast.makeText(this, "Searching for " + query, Toast.LENGTH_LONG).show();
-//        AsyncHttpClient client = new AsyncHttpClient();
-//        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
-//        RequestParams params = new RequestParams();
-//        params.put("api-key","67ba0e31ba6a410bb28b49d32c3e5a35");
-//        params.put("q", searchTerm);
-//        params.put("page",page);
-//        client.get(url,params, new JsonHttpResponseHandler() {
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//                Log.d("DEBUG", response.toString());
-//                JSONArray articleJsonResults = null;
-//                try{
-//                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-//                    articles.addAll(Article.fromJSONArray(articleJsonResults));
-//                    adapter.notifyDataSetChanged();
-//                    //articles.addAll(Article.fromJSONArray(articleJsonResults));
-//                    //adapter.notifyDataSetChanged();
-//                    Log.d("DEBUG", articles.toString());
-//                } catch(JSONException e){
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//        //int curSize = adapter.getItemCount();
-//        //adapter.notifyItemRangeInserted(curSize, articles.size() - 1);
-//    }
 
+
+    private void setParams(RequestParams params, String query, Filters filt){
+        //puts params
+        params.put("q", query);
+        ArrayList<String> queries = new ArrayList<>();
+        if (filt.isArts()) {queries.add("Arts ");}
+        if (filt.isSports()) {queries.add("Sports ");}
+        if (filt.isStyle()) {queries.add("Fashion ");}
+        //string manipulation if filter queries required
+        if (queries.size() != 0) {
+            String tempQuery = "news_desk:(";
+            for (int i = 0; i < queries.size(); i++) {tempQuery += queries.get(i);}
+            tempQuery += ")";
+            params.put("fq", tempQuery);
+        }
+        //puts sort preference
+        params.put("sort", filt.getSort());
+        if(filt.getBegin().length() != 0){params.put("begin_date", filt.getBegin());}
+    }
 }
