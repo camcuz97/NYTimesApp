@@ -10,18 +10,31 @@ public class Filters{
     boolean arts;
     boolean style;
     boolean sports;
+    String sort;
+    String begin;
 
+    public String getSort() {
+        return sort;
+    }
+
+    public String getBegin() {
+        return begin;
+    }
 
     public Filters(){
         arts = false;
         style = false;
         sports = false;
+        sort = "Newest";
+        begin = "";
     }
 
-    public Filters(boolean arts, boolean style, boolean sports) {
+    public Filters(boolean arts, boolean style, boolean sports, String sort, String begin) {
         this.arts = arts;
         this.style = style;
         this.sports = sports;
+        this.sort = sort;
+        this.begin = begin;
     }
 
     public boolean isArts() {

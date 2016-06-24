@@ -163,9 +163,11 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == RESULT_OK && requestCode == REQUEST_CODE){
-            sort = data.getExtras().getString("sort");
-            begin = data.getExtras().getString("date");
+            //sort = data.getExtras().getString("sort");
+            //begin = data.getExtras().getString("date");
             filter = (Filters) Parcels.unwrap(data.getParcelableExtra("filter"));
+            sort = filter.getSort();
+            begin = filter.getBegin();
             articles.clear();
             adapter.notifyDataSetChanged();
             onArticleSearch(0);

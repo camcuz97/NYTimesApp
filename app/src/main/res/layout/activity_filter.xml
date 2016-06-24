@@ -40,9 +40,10 @@
         android:id="@+id/spSort"
         android:spinnerMode="dropdown"
         android:paddingBottom="40dp"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/etDate"
         android:layout_alignLeft="@+id/cbArts"
-        android:layout_alignStart="@+id/cbArts" />
+        android:layout_alignStart="@+id/cbArts"
+        android:layout_marginTop="87dp" />
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -92,20 +93,18 @@
         android:layout_height="wrap_content"
         android:text="@string/sort_order"
         android:id="@+id/tvSort"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:paddingBottom="40dp"
-        android:layout_toLeftOf="@+id/spSort"
-        android:layout_toStartOf="@+id/spSort" />
+        android:layout_alignTop="@+id/spSort"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/save"
         android:id="@+id/btSave"
+        android:onClick="onSubmit"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="onSubmit"/>
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

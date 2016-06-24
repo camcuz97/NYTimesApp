@@ -114,7 +114,7 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
     public void onSubmit(View view){
         spSort = spinner.getSelectedItem().toString();
         Intent data = new Intent();
-        data.putExtra("sort", spSort);
+        //data.putExtra("sort", spSort);
         String date = etDate.getText().toString();
         if(!date.equals("")){
             if(date.charAt(6) == '-'){
@@ -125,8 +125,8 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
             }
             date = date.replace("-","");
         }
-        data.putExtra("date", date);
-        Filters filter = new Filters(arts, style, sports);
+        //data.putExtra("date", date);
+        Filters filter = new Filters(arts, style, sports, spSort, date);
         data.putExtra("filter", Parcels.wrap(filter));
         setResult(RESULT_OK, data);
         finish();
