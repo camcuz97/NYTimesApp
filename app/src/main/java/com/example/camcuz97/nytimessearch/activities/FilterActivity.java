@@ -22,20 +22,22 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FilterActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
+    //binding all views
     @BindView(R.id.spSort) Spinner spinner;
-    String spSort;
-    boolean arts = false;
-    boolean style = false;
-    boolean sports = false;
+    @BindView(R.id.cbArts) CheckBox cbArts;
+    @BindView(R.id.cbStyle) CheckBox cbStyle;
+    @BindView(R.id.cbSports) CheckBox cbSports;
     @BindView(R.id.etDate) EditText etDate;
     Calendar cal;
     int month; int day; int year;
+    Filters filter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
         ButterKnife.bind(this);
+        filter = Parcels.unwrap(getIntent().getParcelableExtra("filter"));
         //spinner = (Spinner) findViewById(R.id.spSort);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.strings_array, android.R.layout.simple_spinner_item);
@@ -43,7 +45,16 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
-        spinner.setSelection(0);
+        if(filter.getSort().equals("Newest")){
+            spinner.setSelection(0);
+        }
+        else{
+            spinner.setSelection(1);
+        }
+        if(filter.isArts()){cbArts.setChecked(true);}
+        if(filter.isSports()){cbSports.setChecked(true);}
+        if(filter.isStyle()){cbStyle.setChecked(true);}
+        if(!filter.getBegin().equals("")){etDate.setText(filter.getUnchangedDate());}
         //etDate = (EditText) findViewById(R.id.etDate);
         etDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,46 +98,37 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
         switch(view.getId()) {
             case R.id.cbArts:
                 if (checked){
-                    arts = true;
+                    filter.setArts(true);
                 }
                 else{
-                    arts = false;
+                    filter.setArts(false);
                 }
                 break;
             case R.id.cbStyle:
                 if (checked){
-                    style = true;
+                    filter.setStyle(true);
                 }
                 else{
-                    style = false;
+                    filter.setStyle(false);
                 }
                 break;
             case R.id.cbSports:
                 if (checked){
-                    sports = true;
+                    filter.setSports(true);
                 }
                 else{
-                    sports = false;
+                    filter.setSports(false);
                 }
         }
     }
 
     public void onSubmit(View view){
-        spSort = spinner.getSelectedItem().toString();
+        filter.setSort(spinner.getSelectedItem().toString());
         Intent data = new Intent();
         //data.putExtra("sort", spSort);
-        String date = etDate.getText().toString();
-        if(!date.equals("")){
-            if(date.charAt(6) == '-'){
-                date = date.substring(0,5) + "0" + date.substring(5);
-            }
-            if(date.length() != 10){
-                date = date.substring(0,8) + "0" + date.substring(8);
-            }
-            date = date.replace("-","");
-        }
+        filter.setUnchangedDate(etDate.getText().toString());
+        filter.manipulateDate();
         //data.putExtra("date", date);
-        Filters filter = new Filters(arts, style, sports, spSort, date);
         data.putExtra("filter", Parcels.wrap(filter));
         setResult(RESULT_OK, data);
         finish();

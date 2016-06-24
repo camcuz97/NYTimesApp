@@ -159,6 +159,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private void onClickFilter() {
         Intent i = new Intent(SearchActivity.this, FilterActivity.class);
+        i.putExtra("filter", Parcels.wrap(filter));
         startActivityForResult(i, REQUEST_CODE);
     }
 
@@ -167,7 +168,7 @@ public class SearchActivity extends AppCompatActivity {
         if(resultCode == RESULT_OK && requestCode == REQUEST_CODE){
             //sort = data.getExtras().getString("sort");
             //begin = data.getExtras().getString("date");
-            filter = (Filters) Parcels.unwrap(data.getParcelableExtra("filter"));
+            filter = Parcels.unwrap(data.getParcelableExtra("filter"));
             sort = filter.getSort();
             begin = filter.getBegin();
             articles.clear();
