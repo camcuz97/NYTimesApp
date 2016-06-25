@@ -24,5 +24,6 @@
         android:textColor="#FFFFFF"
         android:ellipsize="end"
         android:background="#9D538E"
-        android:padding="5dp" />
+        android:padding="5dp"
+        android:textSize="10sp"/>
 </LinearLayout>

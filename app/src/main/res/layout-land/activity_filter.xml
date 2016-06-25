@@ -67,6 +67,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:checked="false"
+        android:onClick="onCheckboxClicked"
         android:layout_alignLeft="@+id/spSort"
         android:layout_alignStart="@+id/spSort" />
 
@@ -77,6 +78,8 @@
         android:id="@+id/cbStyle"
         android:layout_below="@+id/cbArts"
         android:layout_alignLeft="@+id/cbArts"
+        android:onClick="onCheckboxClicked"
+
         android:layout_alignStart="@+id/cbArts"
         android:layout_alignRight="@+id/cbArts"
         android:layout_alignEnd="@+id/cbArts"
@@ -88,6 +91,7 @@
         android:text="@string/sports"
         android:id="@+id/cbSports"
         android:layout_below="@+id/cbStyle"
+        android:onClick="onCheckboxClicked"
         android:layout_alignLeft="@+id/cbStyle"
         android:layout_alignStart="@+id/cbStyle"
         android:layout_alignParentRight="true"
@@ -99,6 +103,7 @@
         android:layout_height="wrap_content"
         android:text="@string/save"
         android:id="@+id/btSave"
+        android:onClick="onSubmit"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

@@ -37,7 +37,6 @@ import cz.msebera.android.httpclient.Header;
 public class SearchActivity extends AppCompatActivity {
 
 
-
     //Set up private instance fields and binds to butterknife
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.rvArticles) RecyclerView rvResults;
@@ -49,7 +48,6 @@ public class SearchActivity extends AppCompatActivity {
     private final int REQUEST_CODE = 200;
     boolean topStories = true;
     ProgressDialog pd;
-
 
 
     @Override
@@ -78,7 +76,6 @@ public class SearchActivity extends AppCompatActivity {
         //defines the filter to be passed between activities
         filter = new Filters();
     }
-
 
 
     @Override
@@ -112,7 +109,6 @@ public class SearchActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -121,9 +117,6 @@ public class SearchActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
         if (id == R.id.action_filter){
             onClickFilter();
             return true;
@@ -132,6 +125,7 @@ public class SearchActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     private void onClickFilter() {
         //creates filter intent
         Intent i = new Intent(SearchActivity.this, FilterActivity.class);
@@ -139,7 +133,6 @@ public class SearchActivity extends AppCompatActivity {
         i.putExtra("filter", Parcels.wrap(filter));
         startActivityForResult(i, REQUEST_CODE);
     }
-
 
 
     @Override
@@ -152,7 +145,6 @@ public class SearchActivity extends AppCompatActivity {
             onArticleSearch(0);
         }
     }
-
 
 
     public void onArticleSearch(int page) {
@@ -174,12 +166,11 @@ public class SearchActivity extends AppCompatActivity {
             });
         }
         //calls search helper
-        searchUrl(page,searchTerm,filter);
+        searchUrl(page,searchTerm);
     }
 
 
-
-    private void searchUrl(int page, String query, Filters filt) {
+    private void searchUrl(int page, String query) {
         //sets up async client
         AsyncHttpClient client = new AsyncHttpClient();
         //sets up api key
@@ -189,7 +180,7 @@ public class SearchActivity extends AppCompatActivity {
         params.put("page", page);
         if(!topStories){
             //calls set parameter helper
-            setParams(params, query, filt);
+            setParams(params, query);
             Log.d("DATE", url + params);
         }
         else{
@@ -217,13 +208,13 @@ public class SearchActivity extends AppCompatActivity {
     }
 
 
-    private void setParams(RequestParams params, String query, Filters filt){
+    private void setParams(RequestParams params, String query){
         //puts params
         params.put("q", query);
         ArrayList<String> queries = new ArrayList<>();
-        if (filt.isArts()) {queries.add("Arts ");}
-        if (filt.isSports()) {queries.add("Sports ");}
-        if (filt.isStyle()) {queries.add("Fashion ");}
+        if (filter.isArts()) {queries.add("Arts ");}
+        if (filter.isSports()) {queries.add("Sports ");}
+        if (filter.isStyle()) {queries.add("Fashion ");}
         //string manipulation if filter queries required
         if (queries.size() != 0) {
             String tempQuery = "news_desk:(";
@@ -232,7 +223,7 @@ public class SearchActivity extends AppCompatActivity {
             params.put("fq", tempQuery);
         }
         //puts sort preference
-        params.put("sort", filt.getSort());
-        if(filt.getBegin().length() != 0){params.put("begin_date", filt.getBegin());}
+        params.put("sort", filter.getSort());
+        if(filter.getBegin().length() != 0){params.put("begin_date", filter.getBegin());}
     }
 }
