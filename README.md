@@ -1,8 +1,8 @@
-# Project 2 - *Name of App Here*
+# Project 2 - NYTimes Viewer
 
-**Name of your app** is an android app that allows a user to search for articles on web using simple filters. The app utilizes [New York Times Search API](http://developer.nytimes.com/docs/read/article_search_api_v2).
+NYTimes Viewer is an android app that allows a user to search for articles on web using simple filters. The app utilizes [New York Times Search API](http://developer.nytimes.com/docs/read/article_search_api_v2).
 
-Time spent: **X** hours spent in total
+Time spent: 14 hours spent in total
 
 ## User Stories
 
@@ -45,7 +45,7 @@ The following **additional** features are implemented:
 Here's a walkthrough of implemented user stories:
 
 Vertical:
-<img src='http://i.imgur.com/1lVWbwY.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='http://i.imgur.com/7qccspU.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 Horizontal
 <img src='http://i.imgur.com/VbiE6Be.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
@@ -54,7 +54,7 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+I really had trouble implementing RecycleView. It took about 4 hours of hard work to finally get it functioning. Also, implementing search and filter tended to create bugs with other parts of the app (especially infinite scrolling). If I had more time, I would go back and implement Gson and modal dialog for filters. I had some spare time at the end, but I dedicated that to changing the look of the app and the look of the code.
 
 ## Open-source libraries used
 
@@ -63,7 +63,7 @@ Describe any challenges encountered while building the app.
 
 ## License
 
-    Copyright [yyyy] [name of copyright owner]
+    Copyright [2016] [Cameron Cuzmanko]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
